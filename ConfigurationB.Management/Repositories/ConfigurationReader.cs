@@ -31,7 +31,7 @@ namespace ConfigurationB.Management.Repositories
             ConfigurationItems = new List<ConfigurationItem>();
 
             var cancellationTokenSource = new CancellationTokenSource();
-            ReadGivenAppSettingVariables(cancellationTokenSource.Token);
+            ReadGivenAppSettingVariables(cancellationTokenSource.Token); 
         }
 
         private async void ReadGivenAppSettingVariables(CancellationToken cancellationToken)
