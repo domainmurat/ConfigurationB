@@ -1,4 +1,7 @@
-﻿using System;
+﻿using ConfigurationB.Management.Repositories;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.IO;
 
 namespace ConfigurationB.ConsoleApp
 {
@@ -6,7 +9,15 @@ namespace ConfigurationB.ConsoleApp
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            string w1 = Directory.GetCurrentDirectory();
+
+            var builder = new ConfigurationBuilder()
+         .SetBasePath(Directory.GetCurrentDirectory())
+         .AddJsonFile("appsettings.json");
+
+            var configuration = builder.Build();
+
+            ConfigurationReaderService configurationReaderService = new ConfigurationReaderService("SERVICE-A", configuration.GetConnectionString("ConfigureConnection"), 5000);
         }
     }
 }

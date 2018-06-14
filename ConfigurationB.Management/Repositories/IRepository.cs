@@ -17,4 +17,9 @@ namespace ConfigurationB.Management.Repositories
         void Update(T entity);
         void Delete(int id);
     }
+
+    public interface IConfigurationItemService<T> where T : class
+    {
+        IQueryable<T> GetValue();
+    }
 }
