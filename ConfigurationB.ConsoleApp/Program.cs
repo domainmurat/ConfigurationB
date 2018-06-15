@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
+using System.Threading;
 
 namespace ConfigurationB.ConsoleApp
 {
@@ -20,7 +21,17 @@ namespace ConfigurationB.ConsoleApp
          .AddJsonFile("appsettings.json", true, true);
             var configuration = builder.Build();
 
-            ConfigurationReaderService configurationReaderService = new ConfigurationReaderService("SERVICE-A", configuration.GetConnectionString("ConfigureConnection"), 5000);
+            ConfigurationReaderService configurationReaderService = new ConfigurationReaderService("SERVICE-A", configuration.GetConnectionString("ConfigureConnection"), 1000);
+
+            while (true)
+            {
+
+                var appValue = configurationReaderService.GetValue<string>("SiteName");
+
+                Console.WriteLine(configurationReaderService.ConfigurationItems.Count.ToString());
+                Thread.Sleep(1000);
+            }
+
         }
     }
 }

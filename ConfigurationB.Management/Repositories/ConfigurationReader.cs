@@ -15,7 +15,7 @@ namespace ConfigurationB.Management.Repositories
     {
         private string ApplicationName { get; set; }
         private int RefreshTimerIntervalInMs { get; set; }
-        private IList<ConfigurationItem> ConfigurationItems;
+        public IList<ConfigurationItem> ConfigurationItems;
         private readonly IAsyncRepository<ConfigurationItem> _configurationItemRepository;
 
         public ConfigurationReaderService(string applicationName, string connectionString, int refreshTimerIntervalInMs)
@@ -29,32 +29,29 @@ namespace ConfigurationB.Management.Repositories
             this.RefreshTimerIntervalInMs = refreshTimerIntervalInMs;
             ConfigurationItems = new List<ConfigurationItem>();
 
+            Run();
+        }
+
+        private void Run()
+        {
             var cancellationTokenSource = new CancellationTokenSource();
-            ReadGivenAppSettingVariables(cancellationTokenSource.Token).Wait();
+            ReadGivenAppSettingVariables(cancellationTokenSource.Token);
         }
 
         private async Task ReadGivenAppSettingVariables(CancellationToken cancellationToken)
         {
-            try
+            while (true)
             {
-                while (true)
-                {
-                    var configurationItems = await _configurationItemRepository.ListAsync(x => x.ApplicationName == this.ApplicationName
-                                                         && x.IsActive == true);
+                this.ConfigurationItems = await _configurationItemRepository.ListAsync(x => x.ApplicationName == this.ApplicationName
+                                                      && x.IsActive == true);
 
-                    this.ConfigurationItems = configurationItems.MapTo<ConfigurationItem, ConfigurationItem>(cfg =>
-                    {
-                        cfg.CreateMap<ConfigurationItem, ConfigurationItem>();
-                    });
+                //this.ConfigurationItems = configurationItems.MapTo<ConfigurationItem, ConfigurationItem>(cfg =>
+                //{
+                //    cfg.CreateMap<ConfigurationItem, ConfigurationItem>();
+                //});
 
-                    await Task.Delay(this.RefreshTimerIntervalInMs, cancellationToken);
-                }
+                await Task.Delay(this.RefreshTimerIntervalInMs, cancellationToken);
             }
-            catch (Exception ex)
-            {
-
-            }
-
         }
 
         public T GetValue<T>(string key)
