@@ -15,7 +15,7 @@ namespace ConfigurationB.Management.Repositories
     {
         private string ApplicationName { get; set; }
         private int RefreshTimerIntervalInMs { get; set; }
-        public IList<ConfigurationItem> ConfigurationItems;
+        private IList<ConfigurationItem> ConfigurationItems;
         private readonly IAsyncRepository<ConfigurationItem> _configurationItemRepository;
 
         public ConfigurationReaderService(string applicationName, string connectionString, int refreshTimerIntervalInMs)
@@ -25,32 +25,50 @@ namespace ConfigurationB.Management.Repositories
             _configurationItemRepository = new EFRepository<ConfigurationItem>(
                 new ConfigurationDbContext(optionsBuilder.Options));
 
-            this.ApplicationName = applicationName;
+            //this.ApplicationName = applicationName;
+            //The following code prevents access to the values of another application
+            this.ApplicationName = System.AppDomain.CurrentDomain.FriendlyName;
             this.RefreshTimerIntervalInMs = refreshTimerIntervalInMs;
             ConfigurationItems = new List<ConfigurationItem>();
 
-            Run();
+            Start();
         }
 
-        private void Run()
+        private void Start()
         {
             var cancellationTokenSource = new CancellationTokenSource();
             ReadGivenAppSettingVariables(cancellationTokenSource.Token);
         }
-
+        /// <summary>
+        /// This method works in interval time with the value assigned to the RefreshTimerIntervalInMs
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         private async Task ReadGivenAppSettingVariables(CancellationToken cancellationToken)
         {
-            while (true)
+            try
             {
-                this.ConfigurationItems = await _configurationItemRepository.ListAsync(x => x.ApplicationName == this.ApplicationName
-                                                      && x.IsActive == true);
+                while (true)
+                {
+                    var configurationItems = await _configurationItemRepository.ListAsync(x => x.ApplicationName == this.ApplicationName
+                                                          && x.IsActive == true);
 
-                //this.ConfigurationItems = configurationItems.MapTo<ConfigurationItem, ConfigurationItem>(cfg =>
-                //{
-                //    cfg.CreateMap<ConfigurationItem, ConfigurationItem>();
-                //});
+                    //if configurationItems is null or empty this.ConfigurationItems keeps last values and app works with last values
+                    if (configurationItems.Any())
+                    {
+                        //we are fetch all data from db and set to this.ConfigurationItems  this provides us to keep last updated values
+                        this.ConfigurationItems = configurationItems.MapTo<ConfigurationItem, ConfigurationItem>(cfg =>
+                        {
+                            cfg.CreateMap<ConfigurationItem, ConfigurationItem>();
+                        });
+                    }
 
-                await Task.Delay(this.RefreshTimerIntervalInMs, cancellationToken);
+                    await Task.Delay(this.RefreshTimerIntervalInMs, cancellationToken);
+                }
+
+            }
+            catch (Exception ex)
+            {
             }
         }
 

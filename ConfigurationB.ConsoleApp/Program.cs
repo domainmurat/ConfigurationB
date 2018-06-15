@@ -10,6 +10,7 @@ namespace ConfigurationB.ConsoleApp
     {
         static void Main(string[] args)
         {
+            string w1 = System.AppDomain.CurrentDomain.FriendlyName;
             //string asd = System.Reflection.Assembly.GetExecutingAssembly().Location;
             //string qwe = System.Reflection.Assembly.GetExecutingAssembly().CodeBase;
             string basePath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\"));
@@ -26,10 +27,16 @@ namespace ConfigurationB.ConsoleApp
             while (true)
             {
 
-                var appValue = configurationReaderService.GetValue<string>("SiteName");
+                var siteName = configurationReaderService.GetValue<string>("SiteName");
+                var isBasketEnabled = configurationReaderService.GetValue<bool>("IsBasketEnabled");
+                var maxItemCount = configurationReaderService.GetValue<int>("MaxItemCount");
+                var test = configurationReaderService.GetValue<int>("asdz");
 
-                Console.WriteLine(configurationReaderService.ConfigurationItems.Count.ToString());
-                Thread.Sleep(1000);
+                Console.WriteLine(siteName);
+                Console.WriteLine(isBasketEnabled);
+                Console.WriteLine(maxItemCount);
+                Console.WriteLine(test);
+                //Thread.Sleep(1000);
             }
 
         }
