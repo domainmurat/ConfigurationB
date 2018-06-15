@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConfigurationB.Management",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConfigurationB.ConsoleApp", "ConfigurationB.ConsoleApp\ConfigurationB.ConsoleApp.csproj", "{C66361A5-AFBE-4941-AF24-4ED752D2C426}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigurationB.MVC", "ConfigurationB.MVC\ConfigurationB.MVC.csproj", "{DF4F7C50-889D-42FD-AD25-D50A726FF8E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConfigurationB.MVC", "ConfigurationB.MVC\ConfigurationB.MVC.csproj", "{DF4F7C50-889D-42FD-AD25-D50A726FF8E6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
