@@ -61,3 +61,34 @@ dotnet ef migrations add InitialModel --context configurationdbcontext -p ../Con
 
 dotnet ef database update -c configurationdbcontext -p ../ConfigurationB.Management/ConfigurationB.Management.csproj -s ConfigurationB.MVC.csproj
 ```
+
+Aşağıdaki method ile belirlenmiş aralıkalrda storage dan verilerin son hali alınarak direkman set edildiğinden en son hali hep güncel kalıyor eğer bir hata oluşmadıysa hata var ise en son hali kalıyor. O yüzden şimdilik yeni veri eklenmişmi veya verilerde güncellenme olmuşmu diye teker teker bakılmadı.
+
+```javascript
+private async Task ReadGivenAppSettingVariables(CancellationToken cancellationToken)
+        {
+            try
+            {
+                while (true)
+                {
+                    var configurationItems = await _configurationItemRepository.ListAsync(x => x.ApplicationName == this.ApplicationName
+                                                          && x.IsActive == true);
+
+                    //if configurationItems is null or empty this.ConfigurationItems keeps last values and app works with last values
+                    if (configurationItems.Any())
+                    {
+                        //we are fetch all data from db and set to this.ConfigurationItems  this provides us to keep last updated values
+                        this.ConfigurationItems = configurationItems.MapTo<ConfigurationItem, ConfigurationItem>(cfg =>
+                        {
+                            cfg.CreateMap<ConfigurationItem, ConfigurationItem>();
+                        });
+                    }
+
+                    await Task.Delay(this.RefreshTimerIntervalInMs, cancellationToken);
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+```
