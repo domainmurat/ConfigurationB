@@ -7,5 +7,5 @@ namespace ConfigurationB.Management.Repositories
 {
     public interface IConfigurationReaderServices
     {
-        T GetValue<T>(string key);    }
+        T GetValue<T>(string key);        Task<T> GetValueAsync<T>(string key);    }
 }

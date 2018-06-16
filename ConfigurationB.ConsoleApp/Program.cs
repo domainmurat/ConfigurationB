@@ -3,12 +3,13 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace ConfigurationB.ConsoleApp
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             string w1 = System.AppDomain.CurrentDomain.FriendlyName;
             //string asd = System.Reflection.Assembly.GetExecutingAssembly().Location;
@@ -22,21 +23,25 @@ namespace ConfigurationB.ConsoleApp
          .AddJsonFile("appsettings.json", true, true);
             var configuration = builder.Build();
 
-            ConfigurationReaderService configurationReaderService = new ConfigurationReaderService("SERVICE-A", configuration.GetConnectionString("ConfigureConnection"), 1000);
+            ConfigurationReaderService configurationReaderService = new ConfigurationReaderService(configuration.GetConnectionString("ConfigureConnection"), 1000);
 
             while (true)
             {
 
-                var siteName = configurationReaderService.GetValue<string>("SiteName");
-                var isBasketEnabled = configurationReaderService.GetValue<bool>("IsBasketEnabled");
-                var maxItemCount = configurationReaderService.GetValue<int>("MaxItemCount");
-                var test = configurationReaderService.GetValue<int>("asdz");
+                var siteName = await configurationReaderService.GetValueAsync<string>("SiteName");
+                var isBasketEnabled = await configurationReaderService.GetValueAsync<bool>("IsBasketEnabled");
+                var maxItemCount = await configurationReaderService.GetValueAsync<int>("MaxItemCount");
+                var consoleApp = configurationReaderService.GetValue<string>("ConsoleApp");
+                var consoleAppAsync = await configurationReaderService.GetValueAsync<string>("ConsoleAppAsync");
+                var test = await configurationReaderService.GetValueAsync<int>("tst");
 
                 Console.WriteLine(siteName);
                 Console.WriteLine(isBasketEnabled);
                 Console.WriteLine(maxItemCount);
+                Console.WriteLine(consoleApp);
+                Console.WriteLine(consoleAppAsync);
                 Console.WriteLine(test);
-                //Thread.Sleep(1000);
+                Thread.Sleep(5000);
             }
 
         }

@@ -18,7 +18,8 @@ namespace ConfigurationB.Management.Repositories
         private IList<ConfigurationItem> ConfigurationItems;
         private readonly IAsyncRepository<ConfigurationItem> _configurationItemRepository;
 
-        public ConfigurationReaderService(string applicationName, string connectionString, int refreshTimerIntervalInMs)
+        //https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/hosted-services?view=aspnetcore-2.1#timed-background-tasks
+        public ConfigurationReaderService(string connectionString, int refreshTimerIntervalInMs)
         {
             var optionsBuilder = new DbContextOptionsBuilder<ConfigurationDbContext>().UseSqlServer(connectionString);
 
@@ -65,7 +66,6 @@ namespace ConfigurationB.Management.Repositories
 
                     await Task.Delay(this.RefreshTimerIntervalInMs, cancellationToken);
                 }
-
             }
             catch (Exception ex)
             {
@@ -73,6 +73,16 @@ namespace ConfigurationB.Management.Repositories
         }
 
         public T GetValue<T>(string key)
+        {
+            return GetValueCommon<T>(key);
+        }
+
+        public async Task<T> GetValueAsync<T>(string key)
+        {
+            return await Task.Run(() => GetValueCommon<T>(key));
+        }
+
+        private T GetValueCommon<T>(string key)
         {
             var configurationItem = ConfigurationItems.Where(x => x.Name == key).FirstOrDefault();
 
