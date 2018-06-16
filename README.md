@@ -1,6 +1,6 @@
 # ConfigurationB
 
-
+Bu projede tüm bussiness logic ConfigurationB.Management projesine yüklenilmiştir. ConfigurationB.Management yapısı herhangi bir Dependency Injectiona bağlanabilecek şekilde yazılmıştır. İçerisinde EntityFrameworkCore işe MsSql e CRUD işlemlerinin yapıldığı Repository Pattern ve belirli aralıklarla storage da tutulan verileri okuyan yapı vardır. İşlemlerin çoğu async/await şeklinde çalışmaktadır.
 
 ```
 -- navigate to webfolder or console apllication then create migration or directly update database
