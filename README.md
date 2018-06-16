@@ -53,6 +53,9 @@ var builder = new ConfigurationBuilder()
 ```
 
 ```
+
+* Storage olarak MsSSql tutulduğundan uygulama başlatılmadan önce projenin çalıştırıalcağı pcde MsSql ve dotnet core olmalı ve aşağıdaki "dotnet ef database update" komutu database oluşması için CMD de çalıştırılmalıdır.
+
 -- navigate to webfolder or console apllication then create migration or directly update database
 dotnet ef migrations add InitialModel --context configurationdbcontext -p ../ConfigurationB.Management/ConfigurationB.Management.csproj -s ConfigurationB.MVC.csproj -o Migrations
 
