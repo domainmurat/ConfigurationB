@@ -58,10 +58,13 @@ namespace ConfigurationB.Management.Repositories
                     if (configurationItems.Any())
                     {
                         //we are fetch all data from db and set to this.ConfigurationItems  this provides us to keep last updated values
-                        this.ConfigurationItems = configurationItems.MapTo<ConfigurationItem, ConfigurationItem>(cfg =>
-                        {
-                            cfg.CreateMap<ConfigurationItem, ConfigurationItem>();
-                        });
+                        this.ConfigurationItems = configurationItems;
+
+                        //Automapper temporarily taken to the comments line
+                        //this.ConfigurationItems = configurationItems.MapTo<ConfigurationItem, ConfigurationItem>(cfg =>
+                        //{
+                        //    cfg.CreateMap<ConfigurationItem, ConfigurationItem>();
+                        //});
                     }
 
                     await Task.Delay(this.RefreshTimerIntervalInMs, cancellationToken);
